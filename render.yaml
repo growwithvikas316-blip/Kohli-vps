@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: kohli-vps-panel
+    runtime: python
+    plan: starter
+    disk:
+      name: kohli-data
+      mountPath: /var/data
+      sizeGB: 1
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 1 --threads 4 --timeout 120
+    healthCheckPath: /healthz
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: OWNER_USER
+        sync: false
+      - key: OWNER_PASS
+        sync: false
+      - key: DATA_DIR
+        value: /var/data/data
+      - key: FILES_ROOT
+        value: /var/data/user_files
